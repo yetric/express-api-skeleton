@@ -3,9 +3,12 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import portfinder from "portfinder";
 import morgan from "morgan";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
-const corsWhitelist = ["https://yetric.net", "https://yetric.com", "https://yetric.org"];
+const corsWhitelist = process.env.CORS_HOST.split(",");
 const corsOptions = {
     origin: function(origin, callback) {
         if (corsWhitelist.indexOf(origin) !== -1 || !origin) {
@@ -20,7 +23,7 @@ app.use(cors(corsOptions));
 app.use(morgan("combined"));
 app.disable("x-powered-by");
 
-app.get("/", (reqeust, response) => {
+app.get("/", (request, response) => {
     return response.json({a: "b"});
 });
 
@@ -30,5 +33,5 @@ const startApp = (error, port) => {
     });
 };
 
-portfinder.basePort = 3000;
+portfinder.basePort = process.env.PORT;
 portfinder.getPort(startApp);
